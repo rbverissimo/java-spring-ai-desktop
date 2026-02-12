@@ -1,0 +1,14 @@
+{
+  "name": "Java 25 Spring Ollama AI + React Dev Environment",
+  "build": { "dockerfile": "Dockerfile" },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "dbaeumer.vscode-eslint", 
+        "dsznajder.es7-react-js-snippets"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 5173] 
+}
