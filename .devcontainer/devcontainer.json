@@ -9,6 +9,5 @@
         "dsznajder.es7-react-js-snippets"
       ]
     }
-  },
-  "forwardPorts": [8080, 5173] 
+  }
 }

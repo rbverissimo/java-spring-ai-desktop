@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    container_name: java-ai-desktop
+    command: sleep infinity
+    restart: unless-stopped
+    ports: 
+      - "${SPRING_PORT}:8080"
+      - "${VITE_PORT}:5173"
+    volumes:
+      - ..:/workspaces/java-spring-ai-desktop:cached
