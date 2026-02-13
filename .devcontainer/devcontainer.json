@@ -1,6 +1,8 @@
 {
   "name": "Java 25 Spring Ollama AI + React Dev Environment",
-  "build": { "dockerfile": "Dockerfile" },
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/java-spring-ai-desktop",
   "customizations": {
     "vscode": {
       "extensions": [
