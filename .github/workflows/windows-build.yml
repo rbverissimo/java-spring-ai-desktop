@@ -1,0 +1,40 @@
+name: Build Windows Executable
+
+on:
+  push: 
+    branches: ['main']
+  workflow_dispatch: 
+
+jobs: 
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Java 25
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'temurin'
+        cache: 'maven'
+    
+    - name: Build Fat JAR with Maven
+      run: ./mvnw clean package -DskipTests
+    
+    - name: Create Windows Executable with jpackage
+      run: |
+        jpackage `
+          --type exe `
+          --name TitanAI `
+          --input target/ `
+          --main-jar springaidesktop-0.0.1-SNAPSHOT.jar `
+          --win-console `
+          --dest release/ 
+      
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with: 
+        name: ColtranAI
+        path: release/*.exe

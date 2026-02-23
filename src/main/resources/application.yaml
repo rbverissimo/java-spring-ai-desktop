@@ -1,3 +1,8 @@
 spring:
   application:
     name: springaidesktop
+  datasource:
+    url: jdbc:sqlite:${user.home}/.coltranai/coltranic.db
+    driver-class-name: org.sqlite.JDBC
+    username: coltran
+    password: coltran
