@@ -27,7 +27,7 @@ jobs:
       run: |
         jpackage `
           --type exe `
-          --name TitanAI `
+          --name ColtranAI `
           --input target/ `
           --main-jar springaidesktop-0.0.1-SNAPSHOT.jar `
           --win-console `
