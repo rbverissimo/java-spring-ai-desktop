@@ -4,5 +4,12 @@ spring:
   datasource:
     url: jdbc:sqlite:${user.home}/.coltranai/coltranic.db
     driver-class-name: org.sqlite.JDBC
-    username: coltran
-    password: coltran
+  sql:
+    init:
+      mode: always
+ai: 
+  chat:
+    memory:
+      jdbc:
+        initialize-schema: never
+
