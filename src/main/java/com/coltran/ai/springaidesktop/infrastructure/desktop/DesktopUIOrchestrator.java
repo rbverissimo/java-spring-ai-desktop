@@ -17,9 +17,12 @@ public class DesktopUIOrchestrator {
             if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
                 Desktop.getDesktop().browse(new URI("http://localhost:8080"));
                 System.out.println("DESKTOP LAUNCHED SUCCESSFULLY!");
+            } else {
+                System.out.println("DESKTOP NOT SUPPORTED IN THIS ENVIRONMENT.");
             }
-        } catch (Exception e) {
-            System.err.println("DESKTOP COULD NOT LAUNCH. ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            System.err.println("DESKTOP COULD NOT LAUNCH. ERROR: " + t.getMessage());
+            System.setProperty("java.awt.headless", "true");
         }
     }
 }
