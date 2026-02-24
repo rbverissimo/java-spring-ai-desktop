@@ -35,3 +35,4 @@ build/
 src/frontend/node_modules
 node_modules
 .node-env
+src/main/resources/static/
