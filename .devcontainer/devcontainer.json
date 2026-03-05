@@ -11,6 +11,5 @@
         "dsznajder.es7-react-js-snippets"
       ]
     }
-  },
-  "postCreateCommand": "cd src/frontend && npm install -D @google/gemini-cli"
+  }
 }
