@@ -53,10 +53,6 @@ function App() {
     <div className="flex h-screen bg-[#242424] text-gray-200">
 
       <ChatSidebar />
-
-      <header className="p-4 border-b border-gray-700 text-center">
-        <h1 className="m-0 text-2xl font-bold text-[#646cff]">Coltran</h1>
-      </header>
       
       <main className="flex-1 flex flex-col relative">
 
