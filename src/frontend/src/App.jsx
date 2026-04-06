@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
+import ChatSidebar from './components/layout/ChatSidebar'
+import ChatHeader from './components/layout/ChatHeader'
 
 function App() {
   const [input, setInput] = useState('')
@@ -48,12 +50,18 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#242424] text-gray-200">
+    <div className="flex h-screen bg-[#242424] text-gray-200">
+
+      <ChatSidebar />
+
       <header className="p-4 border-b border-gray-700 text-center">
         <h1 className="m-0 text-2xl font-bold text-[#646cff]">Coltran</h1>
       </header>
       
-      <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+      <main className="flex-1 flex flex-col relative">
+
+        <ChatHeader />
+
         <div className="w-full max-w-3xl flex flex-col gap-6">
           {messages.length === 0 && (
             <div className="text-center text-gray-500 mt-16 text-xl">
