@@ -58,14 +58,14 @@ function App() {
 
         <ChatHeader />
 
-        <div className="w-full max-w-3xl flex flex-col gap-6">
+        <div className="w-full flex flex-col gap-6 overflow-y-auto py-2">
           {messages.length === 0 && (
             <div className="text-center text-gray-500 mt-16 text-xl">
               How can I help you today?
             </div>
           )}
           {messages.map((msg, index) => (
-            <div key={index} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : msg.role === 'assistant' ? 'justify-start' : 'justify-center'}`}>
+            <div key={index} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : msg.role === 'assistant' ? 'justify-start' : 'justify-center'} px-5`}>
               <div className={`max-w-[85%] md:max-w-[75%] px-5 py-3 rounded-2xl leading-relaxed break-words whitespace-pre-wrap ${
                 msg.role === 'user' 
                   ? 'bg-[#646cff] text-white rounded-br-none' 
@@ -86,27 +86,26 @@ function App() {
           )}
           <div ref={messagesEndRef} />
         </div>
+        <footer className="p-4 md:p-8 border-t border-gray-700 bg-[#242424] flex justify-center">
+          <div className="w-full max-w-1xl flex gap-4 bg-[#333] px-4 py-2 rounded-3xl items-end shadow-lg">
+            <textarea
+              className="flex-1 bg-transparent border-none text-white py-2 font-inherit text-base resize-none max-h-[200px] outline-none"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Type your message..."
+              rows="1"
+            />
+            <button 
+              className="bg-none border-none text-[#646cff] font-bold cursor-pointer px-4 py-2 transition-colors duration-200 hover:text-[#747bff] disabled:text-gray-600 disabled:cursor-not-allowed"
+              onClick={handleSend} 
+              disabled={isLoading || !input.trim()}
+            >
+              Send
+            </button>
+          </div>
+        </footer>
       </main>
-
-      <footer className="p-4 md:p-8 border-t border-gray-700 bg-[#242424] flex justify-center">
-        <div className="w-full max-w-3xl flex gap-4 bg-[#333] px-4 py-2 rounded-3xl items-end shadow-lg">
-          <textarea
-            className="flex-1 bg-transparent border-none text-white py-2 font-inherit text-base resize-none max-h-[200px] outline-none"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyPress}
-            placeholder="Type your message..."
-            rows="1"
-          />
-          <button 
-            className="bg-none border-none text-[#646cff] font-bold cursor-pointer px-4 py-2 transition-colors duration-200 hover:text-[#747bff] disabled:text-gray-600 disabled:cursor-not-allowed"
-            onClick={handleSend} 
-            disabled={isLoading || !input.trim()}
-          >
-            Send
-          </button>
-        </div>
-      </footer>
     </div>
   )
 }
