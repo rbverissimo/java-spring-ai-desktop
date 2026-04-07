@@ -16,6 +16,13 @@ export default defineConfig({
       ignored: ['**/*']
     }
   },
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      secure: false,
+    }
+  },
   build: {
     outDir: '../main/resources/static',
     emptyOutDir: true
