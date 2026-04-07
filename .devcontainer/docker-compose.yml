@@ -7,5 +7,10 @@ services:
     ports: 
       - "${SPRING_PORT}:8080"
       - "${VITE_PORT}:5173"
+      - "${OLLAMA_PORT}:11435"
     volumes:
       - ..:/workspaces/java-spring-ai-desktop:cached
+      - coltranai-data:/home/vscode/.coltranai
+
+volumes:
+  coltranai-data:
