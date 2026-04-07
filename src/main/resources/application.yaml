@@ -1,13 +1,22 @@
 spring:
+  profiles:
+    active: prod
   application:
-    name: springaidesktop
+    name: coltranaidesktop
   datasource:
     url: jdbc:sqlite:${user.home}/.coltranai/coltranic.db
     driver-class-name: org.sqlite.JDBC
   sql:
     init:
       mode: always
-ai: 
+ai:
+  engine:
+    port: ${OLLAMA_PORT:11435}
+  ollama:
+    base-url: http://localhost:${ai.engine.port}
+    chat: 
+      options: 
+        model: llama3.2
   chat:
     memory:
       jdbc:
