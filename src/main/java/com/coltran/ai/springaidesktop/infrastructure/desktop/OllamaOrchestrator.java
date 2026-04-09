@@ -18,7 +18,7 @@ public class OllamaOrchestrator implements ApplicationListener<ApplicationEnviro
     private void startOllamaDaemon(String enginePort) {
         try {
             ProcessBuilder builder = new ProcessBuilder();
-            builder.environment().put("OLLAMA_HOST", "0.0.0.0:11435");
+            builder.environment().put("OLLAMA_HOST", "0.0.0.0:" + enginePort);
             builder.environment().put("OLLAMA_MODELS", System.getProperty("user.home") + "/.coltranai/models");
     
             String os = System.getProperty("os.name").toLowerCase();
