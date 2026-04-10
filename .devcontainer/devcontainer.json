@@ -3,6 +3,7 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/java-spring-ai-desktop",
+  "postStartCommand": "sudo chown -R vscode:vscode /home/vscode/.coltranai",
   "customizations": {
     "vscode": {
       "extensions": [
