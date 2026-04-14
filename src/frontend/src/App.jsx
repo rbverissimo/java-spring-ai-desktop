@@ -26,12 +26,21 @@ function App() {
     setIsLoading(true)
 
     try {
-      const response = await fetch(`/api/chat?message=${encodeURIComponent(input)}`)
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: userMessage.content,
+          conversationId: 'default-thread'
+        })
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch response from AI')
       }
-      const data = await response.text()
-      const aiMessage = { role: 'assistant', content: data }
+      const data = await response.json();
+      const aiMessage = { role: 'assistant', content: data.response }
       setMessages((prev) => [...prev, aiMessage])
     } catch (error) {
       console.error('Error:', error)
