@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jdbc.JdbcRepositoriesAutoConfiguration;
 
+import com.coltran.ai.springaidesktop.infrastructure.desktop.OllamaOrchestrator;
+
 @SpringBootApplication(exclude = {JdbcRepositoriesAutoConfiguration.class})
 public class SpringaidesktopApplication {
 
@@ -32,7 +34,9 @@ public class SpringaidesktopApplication {
 			System.exit(1);
 		}
 
-		SpringApplication.run(SpringaidesktopApplication.class, args);
+		SpringApplication app = new SpringApplication(SpringaidesktopApplication.class);
+		app.addListeners(new OllamaOrchestrator());
+		app.run(args);
 	}
 
 }

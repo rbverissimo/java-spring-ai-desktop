@@ -11,7 +11,7 @@ public class OllamaOrchestrator implements ApplicationListener<ApplicationEnviro
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-        String enginePort = event.getEnvironment().getProperty("ai.engine.port", "11435");
+        String enginePort = event.getEnvironment().getProperty("OLLAMA_PORT", "11435");
         startOllamaDaemon(enginePort);
     }
 
@@ -31,7 +31,9 @@ public class OllamaOrchestrator implements ApplicationListener<ApplicationEnviro
     
             ollamaProcess = builder.start();
 
-            System.out.println("Ollama AI Engine started successfully on port 11435");
+            System.out.println("Ollama AI Engine started successfully on port " + enginePort);
+
+            Runtime.getRuntime().addShutdownHook(new Thread(this::stopOllamaDaemon));
 
         } catch (IOException e) {
             System.err.println("Failed to start Ollama AI Engine: " + e.getMessage());
