@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import './App.css'
 import ChatSidebar from './components/layout/ChatSidebar'
 import ChatHeader from './components/layout/ChatHeader'
+import { api } from './api/client'
+
 
 function App() {
   const [input, setInput] = useState('')
@@ -26,20 +28,14 @@ function App() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+
+      const chatData = {
           message: userMessage.content,
           conversationId: 'default-thread'
-        })
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch response from AI')
       }
-      const data = await response.json();
+
+      const data = await api.post('/api/chat', chatData);
+
       const aiMessage = { role: 'assistant', content: data.response }
       setMessages((prev) => [...prev, aiMessage])
     } catch (error) {
