@@ -42,6 +42,8 @@ jobs:
     
     - name: Create Windows Executable with jpackage
       run: |
+        New-Item -ItemType Directory -Force -Path jptemp
+
         jpackage `
           --type exe `
           --name Coltranic `
@@ -53,6 +55,7 @@ jobs:
           --win-shortcut `
           --win-menu `
           --win-dir-chooser `
+          --temp jptemp `
           --dest release/ 
       
     - name: Upload Artifact
