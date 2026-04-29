@@ -84,6 +84,7 @@ public class ChatController {
         }).toList();
     }
 
+    @GetMapping("/conversations")
     public List<Map<String, Object>> listConversations() {
         return conversationRepository.list(50);
     }

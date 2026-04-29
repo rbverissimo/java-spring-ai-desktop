@@ -34,7 +34,7 @@ function App() {
           conversationId: 'default-thread'
       }
 
-      const data = await api.post('/api/chat', chatData);
+      const data = await api.post('/api/chat/', chatData);
 
       const aiMessage = { role: 'assistant', content: data.response }
       setMessages((prev) => [...prev, aiMessage])
