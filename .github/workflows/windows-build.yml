@@ -23,13 +23,30 @@ jobs:
     - name: Build Fat JAR with Maven
       run: ./mvnw clean package -DskipTests
     
+    - name: Download Pinned Ollama Windows Engine
+      run: |
+        New-Item -ItemType Directory -Force -Path ai-engine
+        $OllamaVersion = "v0.22.0"
+        $DownloadUrl = "https://github.com/ollama/ollama/releases/download/$OllamaVersion/ollama-windows-amd64.zip"
+        
+        Invoke-WebRequest -Uri $DownloadUrl -OutFile "ollama.zip"
+        Expand-Archive -Path "ollama.zip" -DestinationPath "ai-engine" -Force
+
+    - name: Prepare Packaging Directory
+      run: |
+        New-Item -ItemType Directory -Force -Path assembly
+        # Move the Spring Boot JAR
+        Copy-Item -Path "target/springaidesktop-0.0.1-SNAPSHOT.jar" -Destination "assembly/"
+        # Copy the Ollama engine folder so it sits next to the JAR
+        Copy-Item -Path "ai-engine" -Destination "assembly/" -Recurse
+    
     - name: Create Windows Executable with jpackage
       run: |
         jpackage `
           --type exe `
-          --name ColtranAI `
+          --name Coltranic `
           --vendor "Coltran Enterprises" `
-          --input target/ `
+          --input assembly/ `
           --main-jar springaidesktop-0.0.1-SNAPSHOT.jar `
           --win-console `
           --license-file build-assets/terms-of-use.txt `
@@ -41,5 +58,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with: 
-        name: ColtranAI
+        name: Coltranic
         path: release/*.exe
