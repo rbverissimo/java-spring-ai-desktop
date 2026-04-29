@@ -15,6 +15,17 @@ public class ConversationRepository {
         this.jdbcClient = jdbcClient;
     }
 
+    public boolean existsById(String conversationId) {
+        String sql = """
+                SELECT COUNT(1) FROM conversations
+                WHERE ID = :conversationId
+                """;
+        return jdbcClient.sql(sql)
+            .param("conversationId", conversationId)
+            .query(Integer.class)
+            .single() > 0;
+    }
+
     public void save(String conversationId, String title) {
         String sql = """
             INSERT INTO conversations (id, title) 
@@ -30,7 +41,8 @@ public class ConversationRepository {
     }
 
 
-    public List<Map<String, Object>> getRecentConversations(int limit) {
+    public List<Map<String, Object>> list(int limit) {
+        if(limit < 1) limit = 1;
         String sql = """
             SELECT id as conversationId, title, created_at, updated_at 
             FROM conversations 

@@ -16,18 +16,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.coltran.ai.springaidesktop.infrastructure.database.ConversationRepository;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/chat")
 @CrossOrigin(origins = "*")
 public class ChatController {
     
     private final ChatClient chatClient;
-
     private final ChatMemory chatMemory;
+    private final ConversationRepository conversationRepository;
 
-    public ChatController(ChatClient.Builder chatClientBuilder, ChatMemory chatMemory) {
+    public ChatController(ChatClient.Builder chatClientBuilder, ChatMemory chatMemory, ConversationRepository conversationRepository) {
 
         this.chatMemory = chatMemory;
+        this.conversationRepository = conversationRepository;
 
         this.chatClient = chatClientBuilder
             .defaultAdvisors(
@@ -39,7 +42,7 @@ public class ChatController {
 
     }
 
-    @PostMapping("/chat")
+    @PostMapping("/")
     public Map<String, String> generateResponse(@RequestBody Map<String, String> request) {
 
         String userMessage = request.get("message");
@@ -47,6 +50,16 @@ public class ChatController {
         if(userMessage.isBlank()) return Map.of("response", "No content");
 
         String conversationId = request.getOrDefault("conversationId", "default-conversation");
+
+        var isNewConversation = conversationRepository.existsById(conversationId);
+        if(isNewConversation) {
+            String title = this.chatClient.prompt()
+                .user("Summarize the following into a short 3-to-4 word title, no quotes, no extra text, focus on the core idea of this text: " + userMessage)
+                .call()
+                .content();
+            
+            conversationRepository.save(conversationId, title);
+        }
 
         String response = this.chatClient.prompt()
             .user(userMessage)
@@ -57,7 +70,7 @@ public class ChatController {
         return Map.of("response", response);
     }
 
-    @GetMapping("/chat/history")
+    @GetMapping("/history")
     public List<Map<String, String>> getChatHistory(@RequestParam String conversationId) {
         List<Message> history = this.chatMemory.get(conversationId);
 
@@ -69,5 +82,9 @@ public class ChatController {
                 "content", content
             );
         }).toList();
+    }
+
+    public List<Map<String, Object>> listConversations() {
+        return conversationRepository.list(50);
     }
 }
