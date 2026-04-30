@@ -1,5 +1,6 @@
 package com.coltran.ai.springaidesktop.infrastructure.desktop;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -21,14 +22,13 @@ public class OllamaOrchestrator implements ApplicationListener<ApplicationEnviro
             builder.environment().put("OLLAMA_HOST", "0.0.0.0:" + enginePort);
             builder.environment().put("OLLAMA_MODELS", System.getProperty("user.home") + "/.coltranai/models");
     
-            String os = System.getProperty("os.name").toLowerCase();
-    
-            if(os.contains("win")) {
-                builder.command("cmd.exe", "/c", "ai-engine\\ollama.exe", "serve");
-            } else {
-                builder.command("ollama", "serve");
-            }
-    
+            String executablePath = resolveOllamaExecutable();
+            builder.command(executablePath, "serve");
+
+
+            builder.redirectErrorStream(true);
+            builder.redirectOutput(new File(System.getProperty("user.home") + "/.coltranai/ollama-engine.log"));
+            
             ollamaProcess = builder.start();
 
             System.out.println("Ollama AI Engine started successfully on port " + enginePort);
@@ -38,6 +38,23 @@ public class OllamaOrchestrator implements ApplicationListener<ApplicationEnviro
         } catch (IOException e) {
             System.err.println("Failed to start Ollama AI Engine: " + e.getMessage());
         }
+    }
+
+    private String resolveOllamaExecutable() {
+        String os = System.getProperty("os.name").toLowerCase();
+        boolean isWindows = os.contains("win");
+        
+        String binaryName = isWindows ? "ollama.exe" : "ollama";
+        
+        String userDir = System.getProperty("user.dir");
+        File bundledEngine = new File(userDir, "app/ai-engine/" + binaryName);
+        
+        if (bundledEngine.exists()) {
+            return bundledEngine.getAbsolutePath();
+        }
+        
+        System.out.println("Bundled engine not found at " + bundledEngine.getAbsolutePath() + ". Falling back to system PATH.");
+        return binaryName; 
     }
 
     public void stopOllamaDaemon() {
