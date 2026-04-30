@@ -32,31 +32,33 @@ jobs:
         Invoke-WebRequest -Uri $DownloadUrl -OutFile "ollama.zip"
         Expand-Archive -Path "ollama.zip" -DestinationPath "ai-engine" -Force
 
-    - name: Prepare Packaging Directory
+    - name: Build App Image
       run: |
-        New-Item -ItemType Directory -Force -Path assembly
-        # Move the Spring Boot JAR
-        Copy-Item -Path "target/springaidesktop-0.0.1-SNAPSHOT.jar" -Destination "assembly/"
-        # Copy the Ollama engine folder so it sits next to the JAR
-        Copy-Item -Path "ai-engine" -Destination "assembly/" -Recurse
-    
-    - name: Create Windows Executable with jpackage
-      run: |
-        New-Item -ItemType Directory -Force -Path jptemp
+        jpackage `
+          --type app-image `
+          --name Coltranic `
+          --input target/ `
+          --main-jar springaidesktop-0.0.1-SNAPSHOT.jar `
+          --dest image-build/
 
+    - name: Inject Ollama Engine into App Image
+      run: |
+        Copy-Item -Path "ai-engine" -Destination "image-build/Coltranic/app/" -Recurse -Force
+    
+    - name: Wrap App Image into Windows Executable
+      run: |
+        New-Item -ItemType Directory -Force -Path release
         jpackage `
           --type exe `
+          --app-image image-build/Coltranic `
           --name Coltranic `
           --vendor "Coltran Enterprises" `
-          --input assembly/ `
-          --main-jar springaidesktop-0.0.1-SNAPSHOT.jar `
           --win-console `
           --license-file build-assets/terms-of-use.txt `
           --win-shortcut `
           --win-menu `
           --win-dir-chooser `
-          --temp jptemp `
-          --dest release/ 
+          --dest release/
       
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
