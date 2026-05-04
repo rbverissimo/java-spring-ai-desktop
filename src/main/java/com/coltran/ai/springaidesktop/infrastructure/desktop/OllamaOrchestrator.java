@@ -37,18 +37,23 @@ public class OllamaOrchestrator implements ApplicationListener<ApplicationEnviro
         String binaryFileName = isWindows ? "ollama.exe" : "ollama";
 
         File engineFile = new File(coltranBinDir, binaryFileName);
+        String executableCommand;
 
         if(!engineFile.exists()) {
 
+            System.out.println("Ollama engine not found at " + engineFile.getAbsolutePath());
+            
             if(!coltranBinDir.exists()) coltranBinDir.mkdirs();
-
+            
             try {
-
+                
                 if(isWindows){
+                    System.out.println("Downloading Ollama " + OLLAMA_VERSION + " on-demand. This may take a moment");
                     downloadAndExtractWindowsZip(engineFile);
+                    executableCommand = engineFile.getAbsolutePath();
                 } else {
                     System.out.println("Non-windows OS detected. Assuming Ollama is installed on system PATH.");
-                    engineFile = new File("ollama");
+                    executableCommand = "ollama";
                 }
 
             } catch(Exception e) {
@@ -58,9 +63,10 @@ public class OllamaOrchestrator implements ApplicationListener<ApplicationEnviro
 
         } else {
             System.out.println("Found existing Ollama engine at" + engineFile.getAbsolutePath());
+            executableCommand = engineFile.getAbsolutePath();
         }
 
-        startOllamaDaemon(engineFile.getAbsolutePath(), enginePort);
+        startOllamaDaemon(executableCommand, enginePort);
         
     }
 
