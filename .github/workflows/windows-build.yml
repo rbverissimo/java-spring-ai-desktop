@@ -22,38 +22,19 @@ jobs:
     
     - name: Build Fat JAR with Maven
       run: ./mvnw clean package -DskipTests
-    
-    - name: Download Pinned Ollama Windows Engine
-      run: |
-        New-Item -ItemType Directory -Force -Path ai-engine
-        $OllamaVersion = "v0.22.0"
-        $DownloadUrl = "https://github.com/ollama/ollama/releases/download/$OllamaVersion/ollama-windows-amd64.zip"
-        
-        Invoke-WebRequest -Uri $DownloadUrl -OutFile "ollama.zip"
-        Expand-Archive -Path "ollama.zip" -DestinationPath "ai-engine" -Force
 
-    - name: Build App Image
+    - name: Create Release Directory
+      run: New-Item -ItemType Directory -Force -Path release
+
+    - name: Create Windows Executable with jpackage
       run: |
         jpackage `
-          --type app-image `
+          --type exe `
           --name Coltranic `
+          --vendor "Coltran Enterprises" `
           --input target/ `
           --main-jar springaidesktop-0.0.1-SNAPSHOT.jar `
           --win-console `
-          --dest image-build/
-
-    - name: Inject Ollama Engine into App Image
-      run: |
-        Copy-Item -Path "ai-engine" -Destination "image-build/Coltranic/app/" -Recurse -Force
-    
-    - name: Wrap App Image into Windows Executable
-      run: |
-        New-Item -ItemType Directory -Force -Path release
-        jpackage `
-          --type exe `
-          --app-image image-build/Coltranic `
-          --name Coltranic `
-          --vendor "Coltran Enterprises" `
           --license-file build-assets/terms-of-use.txt `
           --win-shortcut `
           --win-menu `
