@@ -19,7 +19,12 @@ public class ModelManagerService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void ensureModelIsDownloaded() {
-        System.out.println("Checking if llama3.2 is installed...");
+        System.out.println("Waitiing for local AI Engine to boot...");
+
+        if(!waitForEngine()) {
+            System.err.println("Fatal: Local AI engine failed to respond after 2 minutes.");
+            return; 
+        }
 
         try {
 
@@ -45,5 +50,26 @@ public class ModelManagerService {
         } catch (Exception e ) {
             System.err.println("Error communicating with local AI Engine: " + e.getMessage());
         }
+    }
+
+    private boolean waitForEngine() {
+        int maxRetries = 60; 
+
+        for(int i = 0; i < maxRetries; i++) {
+            try {
+
+                restClient.get().uri("/").retrieve().toBodilessEntity();
+                return true;
+
+            } catch (Exception e) {
+                try {
+                    Thread.sleep(2000);
+                } catch(InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }
