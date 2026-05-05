@@ -51,8 +51,8 @@ public class ChatController {
 
         String conversationId = request.getOrDefault("conversationId", "default-conversation");
 
-        var isNewConversation = conversationRepository.existsById(conversationId);
-        if(isNewConversation) {
+        boolean existsConversation = conversationRepository.existsById(conversationId);
+        if(!existsConversation) {
             String title = this.chatClient.prompt()
                 .user("Summarize the following into a short 3-to-4 word title, no quotes, no extra text, focus on the core idea of this text: " + userMessage)
                 .call()
