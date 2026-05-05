@@ -12,7 +12,7 @@ public class DesktopUIOrchestrator {
 
     @EventListener({ApplicationReadyEvent.class})
     public void launchBrowserWindow(){
-        System.setProperty("java.awt.headless", "false");
+
         try {
             if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
                 Desktop.getDesktop().browse(new URI("http://localhost:8080"));
