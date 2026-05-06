@@ -85,6 +85,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>coltranicai</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
