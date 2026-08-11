@@ -4,6 +4,9 @@ services:
     container_name: java-ai-desktop
     command: sleep infinity
     restart: unless-stopped
+    env_file:
+      - .env
+      - .secrets.env
     ports: 
       - "${SPRING_PORT}:8080"
       - "${VITE_PORT}:5173"
