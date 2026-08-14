@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-
+import { api } from '../../api/client';
 
 const ChatSidebar = () => {
-    const recentChats = ['Project Ideas', 'Java Debugging', 'Ollama Config']; 
+    const [recentChats, setRecentChats] = useState([]);
+
+    const fetchConversations = async () => {
+        try {
+            const data = await api.get('/api/chat/conversations');
+            setRecentChats(data);
+        } catch (error) {
+            console.error('Error fetching conversations:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchConversations();
+    }, []);
 
     return (
         <aside className="w-64 bg-gray-950 p-4 flex flex-col border-r border-gray-800">
@@ -16,11 +29,13 @@ const ChatSidebar = () => {
             <div className="flex-1 overflow-y-auto">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Recent</p>
                 <div className="space-y-2">
-                    {recentChats.map((chat) => (
-                        <div className="flex item-center gap-3 p-2 rounded-md hover:bg-gray-800 cursor-pointer text-sm text-gray-300">
-                            <span className="truncate">{chat}</span>
-                        </div>
-                    ))}
+                    {recentChats.map((chat, index) => {
+                        return (
+                            <div key={chat.conversationId} className="flex item-center gap-3 p-2 rounded-md hover:bg-gray-800 cursor-pointer text-sm text-gray-300">
+                                <span className="truncate">{chat.title}</span>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </aside>
