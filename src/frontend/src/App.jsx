@@ -3,14 +3,14 @@ import './App.css'
 import ChatSidebar from './components/layout/ChatSidebar'
 import ChatHeader from './components/layout/ChatHeader'
 import ChatWindow from './components/layout/ChatWindow'
-import { api } from './api/client'
-
+import { useChatThread } from './hooks/useChatThread'
 
 function App() {
   const [input, setInput] = useState('')
-  const [messages, setMessages] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [activeConversationId, setActiveConversationId] = useState('default-thread')
   const messagesEndRef = useRef(null)
+
+  const { messages, isLoading, isFetchingHistory, sendMessage } = useChatThread(activeConversationId)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -21,31 +21,10 @@ function App() {
   }, [messages])
 
   const handleSend = async () => {
-    if (!input.trim()) return
-
-    const userMessage = { role: 'user', content: input }
-    setMessages((prev) => [...prev, userMessage])
+    if (!input.trim() || isLoading) return
+    const currentInput = input
     setInput('')
-    setIsLoading(true)
-
-    try {
-
-      const chatData = {
-          message: userMessage.content,
-          conversationId: 'default-thread'
-      }
-
-      const data = await api.post('/api/chat/', chatData);
-
-      const aiMessage = { role: 'assistant', content: data.response }
-      setMessages((prev) => [...prev, aiMessage])
-    } catch (error) {
-      console.error('Error:', error)
-      const errorMessage = { role: 'error', content: 'Sorry, something went wrong. Please check your backend connection.' }
-      setMessages((prev) => [...prev, errorMessage])
-    } finally {
-      setIsLoading(false)
-    }
+    await sendMessage(currentInput)
   }
 
   const handleKeyPress = (e) => {
@@ -64,10 +43,18 @@ function App() {
 
         <ChatHeader />
 
-        <ChatWindow messages={messages} 
-          isLoading={isLoading} 
-          messagesEndRef={messagesEndRef}
-        />
+        {isFetchingHistory ? (
+          <div className="flex-1 flex items-center justify-center text-gray-400">
+            Loading conversation history...
+          </div>
+        ) : (
+          <ChatWindow 
+            messages={messages} 
+            isLoading={isLoading} 
+            messagesEndRef={messagesEndRef}
+          />
+        )}
+
         <footer className="p-4 md:p-8 border-t border-gray-700 bg-[#242424] flex justify-center">
           <div className="w-full max-w-1xl flex gap-4 bg-[#333] px-4 py-2 rounded-3xl items-end shadow-lg">
             <textarea
