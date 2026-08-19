@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { api } from '../../api/client';
 
-const ChatSidebar = () => {
+const ChatSidebar = ({ activeConversationId, onSelectConversation, onNewChat }) => {
     const [recentChats, setRecentChats] = useState([]);
 
     const fetchConversations = async () => {
@@ -16,12 +16,15 @@ const ChatSidebar = () => {
 
     useEffect(() => {
         fetchConversations();
-    }, []);
+    }, [activeConversationId]);
 
     return (
         <aside className="w-64 bg-gray-950 p-4 flex flex-col border-r border-gray-800">
 
-            <button className="flex items-center gap-2 border border-gray-700 rounded-lg p-3 hover:bg-gray-800 transition colors mb-4">
+            <button 
+                onClick={onNewChat}
+                className="flex items-center gap-2 border border-gray-700 rounded-lg p-3 hover:bg-gray-800 transition colors mb-4"
+            >
                 <Plus size={18} />
                 <span>New Chat</span>
             </button>
@@ -30,8 +33,13 @@ const ChatSidebar = () => {
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Recent</p>
                 <div className="space-y-2">
                     {recentChats.map((chat, index) => {
+                        const isActive = chat.conversationId === activeConversationId;
                         return (
-                            <div key={chat.conversationId} className="flex item-center gap-3 p-2 rounded-md hover:bg-gray-800 cursor-pointer text-sm text-gray-300">
+                            <div 
+                                key={chat.conversationId} 
+                                onClick={() => onSelectConversation(chat.conversationId)}
+                                className={`flex items-center gap-3 p-2 rounded-md hover:bg-gray-800 cursor-pointer text-sm text-gray-300 ${isActive ? 'bg-gray-800 text-white font-medium' : ''}`}
+                            >
                                 <span className="truncate">{chat.title}</span>
                             </div>
                         );

@@ -34,10 +34,19 @@ function App() {
     }
   }
 
+  const handleNewChat = () => {
+    const newId = 'chat_' + Date.now();
+    setActiveConversationId(newId);
+  }
+
   return (
     <div className="flex h-screen bg-[#242424] text-gray-200">
 
-      <ChatSidebar />
+      <ChatSidebar 
+        activeConversationId={activeConversationId}
+        onSelectConversation={setActiveConversationId}
+        onNewChat={handleNewChat}
+      />
       
       <main className="flex-1 flex flex-col relative">
 
