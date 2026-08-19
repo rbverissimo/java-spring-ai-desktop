@@ -20,3 +20,12 @@ Coltranic is a desktop-grade, locally hosted AI orchestration tool and chatbot. 
 ## Workflow & Git Constraints
 *   **Testing:** Before proposing structural changes, ensure unit tests exist or provide them.
 *   **Dependencies:** Do not introduce new heavy dependencies (NPM or Maven/Gradle) without explicit authorization. Favor native standard library solutions first.
+
+## Planning Protocol
+Before writing code for any new feature, you must generate a `plan.md` file in the root directory. 
+The `plan.md` must strictly follow this structure:
+1. Objective & Scope (In/Out of scope)
+2. Context & Constraints (Adhere to React, strict TS, Tailwind)
+3. Step-by-Step Task Breakdown (Isolated, testable steps)
+4. Verification & Edge Cases
+Wait for my approval on the `plan.md` before executing any code.
