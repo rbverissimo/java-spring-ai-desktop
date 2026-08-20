@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { api } from '../../api/client';
 
-const ChatSidebar = ({ activeConversationId, onSelectConversation, onNewChat }) => {
+const ChatSidebar = ({ activeConversationId, onSelectConversation, onNewChat, conversationsVersion }) => {
     const [recentChats, setRecentChats] = useState([]);
 
     const fetchConversations = async () => {
@@ -16,7 +16,7 @@ const ChatSidebar = ({ activeConversationId, onSelectConversation, onNewChat }) 
 
     useEffect(() => {
         fetchConversations();
-    }, [activeConversationId]);
+    }, [activeConversationId, conversationsVersion]);
 
     return (
         <aside className="w-64 bg-gray-950 p-4 flex flex-col border-r border-gray-800">
