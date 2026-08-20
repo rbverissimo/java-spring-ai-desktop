@@ -8,9 +8,24 @@ import { useChatThread } from './hooks/useChatThread'
 function App() {
   const [input, setInput] = useState('')
   const [activeConversationId, setActiveConversationId] = useState('default-thread')
+  const [conversationsVersion, setConversationsVersion] = useState(0)
+  const [answeredNewChats, setAnsweredNewChats] = useState(new Set())
   const messagesEndRef = useRef(null)
 
   const { messages, isLoading, isFetchingHistory, sendMessage } = useChatThread(activeConversationId)
+  const prevIsLoadingRef = useRef(isLoading)
+
+  useEffect(() => {
+    if (prevIsLoadingRef.current && !isLoading) {
+      // isLoading transitioned from true to false, meaning the agent finished answering
+      // Only trigger if this active conversation hasn't been answered/fetched yet as a new chat
+      if (activeConversationId.startsWith('chat_') && !answeredNewChats.has(activeConversationId)) {
+        setAnsweredNewChats(prev => new Set(prev).add(activeConversationId))
+        setConversationsVersion(v => v + 1)
+      }
+    }
+    prevIsLoadingRef.current = isLoading
+  }, [isLoading, activeConversationId, answeredNewChats])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -46,6 +61,7 @@ function App() {
         activeConversationId={activeConversationId}
         onSelectConversation={setActiveConversationId}
         onNewChat={handleNewChat}
+        conversationsVersion={conversationsVersion}
       />
       
       <main className="flex-1 flex flex-col relative">
